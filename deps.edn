@@ -46,7 +46,8 @@
   ;;   - clojure -M:nrepl:dev/repl
   ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
-  :dev/repl {:extra-deps {org.clojure/tools.namespace {:mvn/version "1.2.0"}}
+  :dev/repl {:extra-deps {org.clojure/tools.namespace {:mvn/version "1.2.0"}
+                          org.clojure/java.classpath {:mvn/version "1.0.0"}}
              :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :main-opts ["-e" "(load-file,(str,(System/getProperty,\"user.home\"),\"/.clojure/dev.clj\"))"]}
   ;; - in case you need precompiled code on your classpath:
