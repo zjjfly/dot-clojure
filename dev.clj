@@ -61,9 +61,9 @@
     (catch Throwable _))
 
   ;; socket repl handling:
-  (when-not (and (= "none" (System/getenv "SOCKET_REPL_PORT"))
-             (or (resolve 'nrepl.cmdline)
-                 (resolve 'rebel-readline.main)))
+  (when-not (or (= "none" (System/getenv "SOCKET_REPL_PORT"))
+                (requiring-resolve 'nrepl.cmdline/-main)
+                (requiring-resolve 'rebel-readline.main/-main))
     (let [s-port (or (->long (System/getenv "SOCKET_REPL_PORT"))
                      (->long (System/getProperty "socket-repl-port"))
                      (->long (try (slurp ".socket-repl-port") (catch Throwable _)))
