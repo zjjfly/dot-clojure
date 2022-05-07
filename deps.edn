@@ -39,10 +39,12 @@
   :bench {:extra-deps {criterium/criterium {:mvn/version "RELEASE"}}}
 
   ;; REPL-related tools:
-  ;; - start Figwheel and/or Rebel Readline, with a socket REPL:
+  ;; - start Figwheel and/or Rebel Readline, with a socket REPL,maybe a flow-storm debugger:
   ;;   - clj -M:portal:dev/repl OR clojure -M:rebel:portal:dev/repl
   ;;   - clojure -M:rebel:dev/repl
+  ;;   - clojure -M:rebel:debug:dev/repl
   ;;   - clojure -M:nrepl:dev/repl
+  ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :main-opts ["-e" "(load-file,(str,(System/getProperty,\"user.home\"),\"/.clojure/dev.clj\"))"]}
@@ -90,6 +92,9 @@
   :1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.0"}}}
   ;; master is currently 1.12:
   :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
+  
+  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "2.0.38"}
+                       com.github.jpmonettas/flow-storm-inst {:mvn/version "2.0.38"}}}  
 
   :add-libs ; to get access to clojure.tools.deps.alpha.repl/add-libs
   ;; IMPORTANT NOTE: this is the new add-lib3 branch but is still a work

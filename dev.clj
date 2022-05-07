@@ -39,7 +39,7 @@
   * defaults to 0 (which will automatically pick an available port)
   Writes the selected port back to .socket-repl-port for next time.
 
-  Set SOCKET_REPL_PORT=none to suppress the Socket Server startup.
+  Set SOCKET_REPL_PORT=none or add nrepl in classpath to suppress the Socket Server startup.
 
   Then pick a REPL as follows:
   * if Figwheel Main is on the classpath then start that, else
@@ -61,7 +61,9 @@
     (catch Throwable _))
 
   ;; socket repl handling:
-  (when-not (= "none" (System/getenv "SOCKET_REPL_PORT"))
+  (when-not (and (= "none" (System/getenv "SOCKET_REPL_PORT"))
+             (or (resolve 'nrepl.cmdline)
+                 (resolve 'rebel-readline.main)))
     (let [s-port (or (->long (System/getenv "SOCKET_REPL_PORT"))
                      (->long (System/getProperty "socket-repl-port"))
                      (->long (try (slurp ".socket-repl-port") (catch Throwable _)))
@@ -129,7 +131,14 @@
     (println "Starting" repl-name "as the REPL...")
     (repl-fn)))
 
+(try
+  (let [fsa-connect (requiring-resolve 'flow-storm.api/local-connect)]
+    (fsa-connect))
+  (catch Throwable _))
+
 (start-repl)
+
+  ;; jedi-time?
 
 ;; ensure a smooth exit after the REPL is closed
 (System/exit 0)
