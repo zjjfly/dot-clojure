@@ -5,7 +5,14 @@
   file looks at what tooling you have available on your
   classpath and starts a REPL."
   (:require [clojure.repl :refer [demunge]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.tools.namespace.find :as nf]
+            [clojure.java.classpath :as jcp]))
+
+(defonce all-namespaces (nf/find-namespaces (jcp/classpath)))
+
+(defn lookup-ns [ns-sym]
+  (some #(= % ns-sym) all-namespaces))
 
 (when-not (resolve 'requiring-resolve)
   (throw (ex-info ":dev/repl and dev.clj require at least Clojure 1.10"
@@ -62,8 +69,8 @@
 
   ;; socket repl handling:
   (when-not (or (= "none" (System/getenv "SOCKET_REPL_PORT"))
-                (requiring-resolve 'nrepl.cmdline/-main)
-                (requiring-resolve 'rebel-readline.main/-main))
+                (lookup-ns 'nrepl.cmdline)
+                (lookup-ns 'rebel-readline.main))
     (let [s-port (or (->long (System/getenv "SOCKET_REPL_PORT"))
                      (->long (System/getProperty "socket-repl-port"))
                      (->long (try (slurp ".socket-repl-port") (catch Throwable _)))
