@@ -98,7 +98,10 @@
   :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
   
   :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "2.0.38"}
-                       com.github.jpmonettas/flow-storm-inst {:mvn/version "2.0.38"}}}  
+                       com.github.jpmonettas/flow-storm-inst {:mvn/version "2.0.38"}}}
+  
+  :graph {:replace-deps {org.clojure/tools.deps.graph {:mvn/version "1.1.68"}}
+          :ns-default clojure.tools.deps.graph}
 
   :add-libs ; to get access to clojure.tools.deps.alpha.repl/add-libs
   ;; IMPORTANT NOTE: this is the new add-lib3 branch but is still a work
