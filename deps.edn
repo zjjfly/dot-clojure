@@ -15,14 +15,15 @@
   ;; testing and debugging tools (this would normally be overridden
   ;; by a :test alias in the project deps.edn file -- but it's a
   ;; useful default):
-  :test {:extra-paths ["test" "src/test/clojure"]
+  :test {:extra-paths ["src/test/clj" "test/clj"]
          :extra-deps {org.clojure/test.check {:mvn/version "RELEASE"}}}
   ;; - see https://github.com/cognitect-labs/test-runner
   ;; - run your tests: clj -X:test:runner
   :runner {:extra-deps {io.github.cognitect-labs/test-runner
                         {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
            :exec-fn cognitect.test-runner.api/test
-           :exec-args {:dirs ["test" "src/test/clojure"]}}
+           :exec-args {:dirs ["src/test/clj" "test/clj"]
+                       :patterns [".*$"]}}
   ;; - see https://github.com/jonase/eastwood#running-eastwood-in-a-repl
   :eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
              :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
