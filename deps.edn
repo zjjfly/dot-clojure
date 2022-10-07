@@ -98,8 +98,8 @@
   ;; master is currently 1.12:
   :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
   
-  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "2.0.38"}
-                       com.github.jpmonettas/flow-storm-inst {:mvn/version "2.0.38"}}}
+  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "RELEASE"}
+                       com.github.jpmonettas/flow-storm-inst {:mvn/version "RELEASE"}}}
   
   :graph {:replace-deps {org.clojure/tools.deps.graph {:mvn/version "1.1.68"}}
           :ns-default clojure.tools.deps.graph}
