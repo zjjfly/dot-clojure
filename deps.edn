@@ -60,9 +60,13 @@
   :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "RELEASE"}}
           :main-opts ["-m" "rebel-readline.main"]}
   ;; - see https://nrepl.org/
-  ;; - start an nREPL server on a random available port:
+  ;; - start a basic nREPL server on a random available port:
   :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "RELEASE"}}
           :main-opts ["-m" "nrepl.cmdline"]}
+  ;; - see https://nrepl.org/
+  ;; - start a CIDER-enhanced nREPL server on a random available port:
+  :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "RELEASE"}}
+                :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
   ;; - see https://github.com/jimpil/jedi-time
   :jedi-time
@@ -95,6 +99,8 @@
   ;; latest 1.11 is 1.11.1 but you can ask for earlier versions:
   :1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
   :1.11.0 {:override-deps {org.clojure/clojure {:mvn/version "1.11.0"}}}
+  ;; current 1.12 release is Alpha 1:
+  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-alpha1"}}}
   ;; master is currently 1.12:
   :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
   
