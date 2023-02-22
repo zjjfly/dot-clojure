@@ -16,7 +16,7 @@
   ;; by a :test alias in the project deps.edn file -- but it's a
   ;; useful default):
   :test {:extra-paths ["src/test/clj" "test/clj"]
-         :extra-deps {org.clojure/test.check {:mvn/version "RELEASE"}}}
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}}}
   ;; - see https://github.com/cognitect-labs/test-runner
   ;; - run your tests: clj -X:test:runner
   :runner {:extra-deps {io.github.cognitect-labs/test-runner
@@ -25,7 +25,7 @@
            :exec-args {:dirs ["src/test/clj" "test/clj"]
                        :patterns [".*$"]}}
   ;; - see https://github.com/jonase/eastwood#running-eastwood-in-a-repl
-  :eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
+  :eastwood {:extra-deps {jonase/eastwood {:mvn/version "1.3.0"}}
              :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
   ;; - see https://github.com/athos/clj-check
   :check {:extra-deps {io.github.athos/clj-check
@@ -33,11 +33,11 @@
           :main-opts ["-m" "clj-check.check"]}
   ;; - see https://github.com/clojure-expectations/clojure-test
   ;; - run your expectations: clj -M:test:expect:runner
-  :expect {:extra-deps {com.github.seancorfield/expectations {:mvn/version "RELEASE"}}}
+  :expect {:extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.165"}}}
   ;; - see https://github.com/hugoduncan/criterium/
   ;; - (require '[criterium.core :refer [bench]])
   ;; - (bench (your-expression))
-  :bench {:extra-deps {criterium/criterium {:mvn/version "RELEASE"}}}
+  :bench {:extra-deps {criterium/criterium {:mvn/version "0.4.6"}}}
 
   ;; REPL-related tools:
   ;; - start Figwheel and/or Rebel Readline, with a socket REPL,maybe a flow-storm debugger:
@@ -47,7 +47,7 @@
   ;;   - clojure -M:nrepl:dev/repl
   ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
-  :dev/repl {:extra-deps {org.clojure/tools.namespace {:mvn/version "1.2.0"}
+  :dev/repl {:extra-deps {org.clojure/tools.namespace {:mvn/version "1.4.1"}
                           org.clojure/java.classpath {:mvn/version "1.0.0"}}
              :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :main-opts ["-e" "(load-file,(str,(System/getProperty,\"user.home\"),\"/.clojure/dev.clj\"))"]}
@@ -57,15 +57,15 @@
   :socket {:jvm-opts ["-Dclojure.server.repl={:address,\"0.0.0.0\",:port,50505,:accept,clojure.core.server/repl}"]}
   ;; - see https://github.com/bhauman/rebel-readline
   ;; - start a Rebel Readline REPL:
-  :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "RELEASE"}}
+  :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
           :main-opts ["-m" "rebel-readline.main"]}
   ;; - see https://nrepl.org/
   ;; - start a basic nREPL server on a random available port:
-  :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "RELEASE"}}
+  :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "1.1.0-alpha1"}}
           :main-opts ["-m" "nrepl.cmdline"]}
   ;; - see https://nrepl.org/
   ;; - start a CIDER-enhanced nREPL server on a random available port:
-  :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "RELEASE"}}
+  :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.30.0"}}
                 :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
   ;; - see https://github.com/jimpil/jedi-time
@@ -73,7 +73,7 @@
   {:extra-deps {jedi-time/jedi-time {:mvn/version "0.2.1"}}}
   ;; - see https://github.com/djblue/portal
   :portal
-  {:extra-deps {djblue/portal {:mvn/version "RELEASE"}}}
+  {:extra-deps {djblue/portal {:mvn/version "0.35.1"}}}
   ;; - see https://github.com/stuarthalloway/reflector
   :reflect
   {:extra-deps {io.github.stuarthalloway/reflector
@@ -104,8 +104,8 @@
   ;; master is currently 1.12:
   :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
   
-  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "RELEASE"}
-                       com.github.jpmonettas/flow-storm-inst {:mvn/version "RELEASE"}}}
+  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.3.320"}
+                       com.github.jpmonettas/flow-storm-inst {:mvn/version "3.3.320"}}}
   
   :graph {:replace-deps {org.clojure/tools.deps.graph {:mvn/version "1.1.68"}}
           :ns-default clojure.tools.deps.graph}
