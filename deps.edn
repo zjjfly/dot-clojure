@@ -48,9 +48,8 @@
   ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-             :extra-deps {io.github.seancorfield/dot-clojure
-                          {:git/tag "v1.0.1"
-                           :git/sha "e932f96"}}
+             :extra-deps {io.github.zjjfly/dot-clojure
+                          {:git/sha "aac103f87ccd1e31c33af33fc8b17a6259d3ad04"}}
              :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
@@ -71,12 +70,13 @@
 
   ;; - see https://github.com/Datomic/dev.datafy
   :datomic/dev.datafy
-  {com.datomic/dev.datafy {:git/sha "4a9dffb"
-                           :git/tag "v0.1"
-                           :git/url "https://github.com/Datomic/dev.datafy"}}
+  {:extra-deps {com.datomic/dev.datafy {:git/sha "4a9dffb"
+                                        :git/tag "v0.1"
+                                        :git/url "https://github.com/Datomic/dev.datafy"}}}
   ;; - see https://github.com/donut-party/dbxray
   :dbxray
-  {party.donut/dbxray {:mvn/version "RELEASE"}}
+  {:extra-deps
+   {party.donut/dbxray {:mvn/version "RELEASE"}}}
   ;; - see https://github.com/jimpil/jedi-time
   :jedi-time
   {:extra-deps {jedi-time/jedi-time {:mvn/version "0.2.1"}}}
