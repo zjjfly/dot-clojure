@@ -1,4 +1,4 @@
-;; copyright (c) 2018-2022 sean corfield, all rights reserved
+;; copyright (c) 2018-2023 sean corfield, all rights reserved
 
 ;; see https://github.com/seancorfield/dot-clojure
 {:mvn/repos {"sonatype" {:url "https://oss.sonatype.org/content/repositories/snapshots/"}}
@@ -47,10 +47,11 @@
   ;;   - clojure -M:nrepl:dev/repl
   ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
-  :dev/repl {:extra-deps {org.clojure/tools.namespace {:mvn/version "1.4.0"}
-                          org.clojure/java.classpath {:mvn/version "1.0.0"}}
-             :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-             :main-opts ["-e" "(load-file,(str,(System/getProperty,\"user.home\"),\"/.clojure/dev.clj\"))"]}
+  :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+             :extra-deps {io.github.seancorfield/dot-clojure
+                          {:git/tag "v1.0.1"
+                           :git/sha "e932f96"}}
+             :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
   ;; - start a Socket REPL on port 50505 (not needed if you use the :dev/repl alias):
@@ -68,6 +69,14 @@
   :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.30.0"}}
                 :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
+  ;; - see https://github.com/Datomic/dev.datafy
+  :datomic/dev.datafy
+  {com.datomic/dev.datafy {:git/sha "4a9dffb"
+                           :git/tag "v0.1"
+                           :git/url "https://github.com/Datomic/dev.datafy"}}
+  ;; - see https://github.com/donut-party/dbxray
+  :dbxray
+  {party.donut/dbxray {:mvn/version "RELEASE"}}
   ;; - see https://github.com/jimpil/jedi-time
   :jedi-time
   {:extra-deps {jedi-time/jedi-time {:mvn/version "0.2.1"}}}
@@ -79,6 +88,10 @@
   {:extra-deps {io.github.stuarthalloway/reflector
                 {:git/url "https://github.com/stuarthalloway/reflector"
                  :sha "93a0c19b4526c1180959e940202928d35e5c3cef"}}}
+  ;flow storm debugger
+  :debug
+  {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.3.320"}
+                       com.github.jpmonettas/flow-storm-inst {:mvn/version "3.3.320"}}}
 
   ;; pull in specific versions of Clojure:
   :1.0 {:override-deps {org.clojure/clojure {:mvn/version "1.0.0"}}}
@@ -99,41 +112,9 @@
   ;; latest 1.11 is 1.11.1 but you can ask for earlier versions:
   :1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
   :1.11.0 {:override-deps {org.clojure/clojure {:mvn/version "1.11.0"}}}
-  ;; current 1.12 release is Alpha 1:
-  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-alpha1"}}}
+  ;; current 1.12 release is Alpha 2:
+  ;; - the functionality formerly requiring the :add-libs alias for the
+  ;;   branch of tools.deps.alpha is now a part of clojure itself!
+  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-alpha2"}}}
   ;; master is currently 1.12:
-  :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}
-  
-  :debug {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.3.320"}
-                       com.github.jpmonettas/flow-storm-inst {:mvn/version "3.3.320"}}}
-  
-  :graph {:replace-deps {org.clojure/tools.deps.graph {:mvn/version "1.1.68"}}
-          :ns-default clojure.tools.deps.graph}
-
-  :add-libs ; to get access to clojure.tools.deps.alpha.repl/add-libs
-  ;; IMPORTANT NOTE: this is the new add-lib3 branch but is still a work
-  ;; in progress and likely to break/change as the core team's work
-  ;; continues on integrating some add-lib-like functionality officially
-  ;; into either t.d.a or perhaps Clojure itself; in addition, the default
-  ;; install of the Clojure CLI includes a :deps alias to the version of
-  ;; t.d.a that is included in the install, so I renamed :deps to :add-lib!
-  ;; CAVEAT: since this is a git dependency, it doesn't bring in any of
-  ;; the compiled Java code so S3 Maven repos are not accessible via this
-  ;; alias (which the released t.d.a provides).
-  ;; - now you can add new deps to a running REPL:
-  ;; (require '[clojure.tools.deps.alpha.repl :refer [add-libs]])
-  ;; (add-libs '{some/library {:mvn/version "RELEASE"}})
-  ;; - and you can git deps too; here's how to get the master version of a lib:
-  ;; (require '[clojure.tools.gitlibs :as gitlibs])
-  ;; (defn load-master [lib]
-  ;;   (let [git (str "https://github.com/" lib ".git")]
-  ;;    (add-libs {lib {:git/url git :sha (gitlibs/resolve git "master")}})))
-  ;; - e.g., using the GitHub path (not the usual Maven group/artifact):
-  ;; (load-master 'clojure/tools.trace)
-  {:extra-deps {org.clojure/tools.deps.alpha ; add-lib3 branch
-                {:git/url "https://github.com/clojure/tools.deps.alpha"
-                 :sha "e4fb92eef724fa39e29b39cc2b1a850567d490dd"}}
-   ;; this ensures we have a DynamicClassLoader, which is needed for
-   ;; add-libs to work, if we're starting other processes via aliases
-   ;; such as a socket REPL or Cognitect's REBL etc
-   :main-opts ["-e" "(->>(Thread/currentThread)(.getContextClassLoader)(clojure.lang.DynamicClassLoader.)(.setContextClassLoader,(Thread/currentThread)))"]}}}
+  :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}}}
