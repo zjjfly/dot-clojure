@@ -4,14 +4,7 @@
   "Invoke org.corfield.dev.repl/start-repl to start a REPL based on
   what tooling you have available on your classpath."
   (:require [clojure.repl :refer [demunge]]
-            [clojure.string :as str]
-            [clojure.tools.namespace.find :as nf]
-            [clojure.java.classpath :as jcp]))
-
-(defonce all-namespaces (nf/find-namespaces (jcp/classpath)))
-
-(defn lookup-ns [ns-sym]
-  (some #(= % ns-sym) all-namespaces))
+            [clojure.string :as str]))
 
 (when-not (resolve 'requiring-resolve)
   (throw (ex-info ":dev/repl and repl.clj require at least Clojure 1.10"
@@ -60,6 +53,11 @@
   * if Rebel Readline is on the classpath then start that, else
   * start a plain ol' Clojure REPL."
   []
+  ;; flow-storm?
+  (try
+    ((requiring-resolve 'flow-storm.api/local-connect))
+    (println "Flow storm Enabled...")
+    (catch Throwable _))
   ;; jedi-time?
   (try
     (require 'jedi-time.core)
