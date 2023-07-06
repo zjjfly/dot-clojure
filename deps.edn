@@ -90,8 +90,13 @@
                  :sha "93a0c19b4526c1180959e940202928d35e5c3cef"}}}
   ;flow storm debugger
   :debug
-  {:extra-deps {com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.6.8"}
-                       com.github.jpmonettas/flow-storm-inst {:mvn/version "3.6.8"}}}
+  {:classpath-overrides {org.clojure/clojure nil} ; for disabling the official compiler
+   :extra-deps {com.github.jpmonettas/clojure {:mvn/version "RELEASE"}
+                com.github.jpmonettas/flow-storm-dbg {:mvn/version "RELEASE"}}
+   :jvm-opts ["-Dclojure.storm.instrumentEnable=true"
+                ;; "-Dflowstorm.styles=/home/jmonetta/.flow-storm/big-fonts.css"
+                "-Dflowstorm.theme=dark"
+                "-Dclojure.storm.instrumentOnlyPrefixes=user"]}
 
   ;; pull in specific versions of Clojure:
   :1.0 {:override-deps {org.clojure/clojure {:mvn/version "1.0.0"}}}
