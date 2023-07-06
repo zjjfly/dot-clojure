@@ -53,11 +53,6 @@
   * if Rebel Readline is on the classpath then start that, else
   * start a plain ol' Clojure REPL."
   []
-  ;; flow-storm?
-  (try
-    ((requiring-resolve 'flow-storm.api/local-connect))
-    (println "Flow storm Enabled...")
-    (catch Throwable _))
   ;; jedi-time?
   (try
     (require 'jedi-time.core)

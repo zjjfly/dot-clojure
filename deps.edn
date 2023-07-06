@@ -43,13 +43,12 @@
   ;; - start Figwheel and/or Rebel Readline, with a socket REPL,maybe a flow-storm debugger:
   ;;   - clj -M:portal:dev/repl OR clojure -M:rebel:portal:dev/repl
   ;;   - clojure -M:rebel:dev/repl
-  ;;   - clojure -M:rebel:debug:dev/repl
   ;;   - clojure -M:nrepl:dev/repl
-  ;;   - clojure -M:nrepl:debug:dev/repl
   ;;   - clojure -M:fig:build:dev/repl
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-             :extra-deps {io.github.zjjfly/dot-clojure
-                          {:git/sha "a03b06440daeae11462642cde4300870a257ad01"}}
+             :extra-deps {io.github.seancorfield/dot-clojure
+                          {:git/tag "v1.0.2"
+                           :git/sha "6a3f903"}}
              :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
