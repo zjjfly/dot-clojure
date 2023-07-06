@@ -49,7 +49,7 @@
   ;;   - clojure -M:fig:build:dev/repl
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :extra-deps {io.github.zjjfly/dot-clojure
-                          {:git/sha "aac103f87ccd1e31c33af33fc8b17a6259d3ad04"}}
+                          {:git/sha "a03b06440daeae11462642cde4300870a257ad01"}}
              :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
