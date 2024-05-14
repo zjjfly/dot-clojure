@@ -1,14 +1,14 @@
 # dot-clojure
 
-This is my personal `.clojure/deps.edn` file providing useful `clj` aliases drawn from a variety of projects. It is published to GitHub so I can keep all my computers sync'd up -- and to provide a range of examples that folks new to the Clojure CLI might find helpful.
+This is my personal `.config/clojure/deps.edn` (or `.clojure/deps.edn`) file providing useful `clj` aliases drawn from a variety of projects. It is published to GitHub so I can keep all my computers sync'd up -- and to provide a range of examples that folks new to the Clojure CLI might find helpful.
 
 **Several git dependencies here assume you have at least Clojure CLI 1.11.1.1273!**
 
-In addition, my `.clojure/tools/` folder is also here, containing the tools that I've installed globally, via the latest Clojure CLI (was 1.11.1.1273 when I last updated this) -- see [Tool installation and invocation](https://clojure.org/reference/deps_and_cli#tool_install) in the Deps and CLI Reference. As I add global tools, I am removing them as aliases.
+In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the latest Clojure CLI (was 1.11.3.1463 when I last updated this) -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
 
 The main alias I use here is `:dev/repl` which starts various combinations of REPL tooling. See [**The `:dev/repl` Alias**](#the-devrepl-alias) below for more details.
 
-_Since it is my personal file, it may make assumptions about my own environment. For example, it uses `"RELEASE"` for several tools so I can always get the latest stable version of any dev/test tool I use. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
+_Since it is my personal file, it may make assumptions about my own environment. For example, it uses `"RELEASE"` for several tools -- and for Clojure itself, currently 1.12.0-alpha11 -- so I can always get the latest stable version of any dev/test tool I use. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
 
 **If you want a really well-documented, well-maintained alternative that actually tracks versions of tools, I would recommend you use the [Practicalli Clojure `deps.edn`](https://github.com/practicalli/clojure-deps-edn) project instead!**
 
@@ -41,12 +41,6 @@ These are installed via `clojure -Ttools install ...` and usable via `clojure -T
   * `clojure -Tnew template :name myname/mytemplate` -- creates a new `deps.edn`-based template project,
   * `clojure -A:somealias -Tnew create :template some/thing :name myname/myapp` -- locates a template for `some/thing` on the classpath, based on `:somealias`, and uses it to create a new `deps.edn`-based project,
   * `clojure -A:deps -Tnew help/doc` -- for more information and other functions.
-* `poly` -- a recent **master** version of [Polylith's `poly` tool](https://github.com/polyfy/polylith) for working with Polylith projects:
-  * `clojure -Tpoly shell` -- start an interactive Polylith shell,
-  * `clojure -Tpoly info :loc true` -- display information about a Polylith workspace, including lines of code,
-  * `clojure -Tpoly create c user` -- create a `user` component in a Polylith workspace,
-  * `clojure -Tpoly test :dev true` -- run tests in the `dev` project context, in a Polylith workspace,
-  * `clojure -A:deps -Tpoly help/doc` -- for more information and other functions.
 
 And the older `clj-new` tool:
 
@@ -99,9 +93,10 @@ There are aliases to pull in and start various REPL-related tools:
 * `:reflect` -- adds Stuart Halloway's reflector utility (best used with Portal)
 
 There are aliases to pull in specific versions of Clojure:
-* `:master` -- Clojure 1.12.0-master-SNAPSHOT
-* `:1.12` -- Clojure 1.12.0-alpha4
-* `:1.11` -- Clojure 1.11.1 -- see [changes to Clojure in version 1.11.1](https://github.com/clojure/clojure/blob/master/changes.md)
+* `:1.12` -- Clojure 1.12.0-alpha11 -- see [changes to Clojure in prerelease versions of 1.12.0](https://clojure.org/releases/devchangelog)
+* `:1.11` -- Clojure 1.11.3 -- see [changes to Clojure in version 1.11.3](https://github.com/clojure/clojure/blob/master/changes.md)
+  * `:1.11.2` -- Clojure 1.11.2
+  * `:1.11.1` -- Clojure 1.11.1
   * `:1.11.0` -- Clojure 1.11.0
 * `:1.10` -- Clojure 1.10.3
   * `:1.10.2` -- Clojure 1.10.2
@@ -110,6 +105,15 @@ There are aliases to pull in specific versions of Clojure:
 * `:1.9` -- Clojure 1.9.0
 * `:1.8` -- Clojure 1.8.0
 * ... back to `:1.0` (note: `:1.5` is actually Clojure 1.5.1 to avoid a bug in Clojure 1.5.0, and `:1.2` is 1.2.1)
+
+> Note: the `:master` alias has been removed since it is rarely different from the most recent (alpha) release of Clojure.
+
+To work with the Polylith command-line tool:
+* `:poly` -- the latest (stable) release of [Polylith's `poly` tool](https://github.com/polyfy/polylith), as a library from Clojars (previously, this was a git dependency) -- example usage:
+  * `clojure -M:poly shell` -- start an interactive Polylith shell,
+  * `clojure -M:poly info :loc` -- display information about a Polylith workspace, including lines of code,
+  * `clojure -M:poly create component name:user` -- create a `user` component in a Polylith workspace,
+  * `clojure -M:poly test :dev` -- run tests in the `dev` project context, in a Polylith workspace.
 
 > Note: the _EXPERIMENTAL_ `:add-libs` alias has been removed -- use the [`clojure.repl.deps`](https://clojure.github.io/clojure/branch-master/clojure.repl-api.html#clojure.repl.deps) in Clojure 1.12.0 Alpha 2 or later instead!
 

@@ -1,11 +1,16 @@
-;; copyright (c) 2018-2023 sean corfield, all rights reserved
+;; copyright (c) 2018-2024 sean corfield, all rights reserved
 
 ;; see https://github.com/seancorfield/dot-clojure
 {:mvn/repos {"sonatype" {:url "https://oss.sonatype.org/content/repositories/snapshots/"}}
+ :deps {org.clojure/clojure {:mvn/version "RELEASE"}}
  :aliases
- {:deps+ {:extra-deps {org.clojure/tools.deps.cli {:mvn/version "RELEASE"}}
+ {;; ADD tools.deps so you can get help within an existing project:
+  ;; clojure -X:deps replaces the deps/paths
+  ;; clojure -X:deps+ ADDS to the deps/paths
+  :deps+ {:extra-deps {org.clojure/tools.deps.cli {:mvn/version "RELEASE"}}
           :ns-default clojure.tools.deps.cli.api
           :ns-aliases {help clojure.tools.deps.cli.help}}
+
   ;; jar installation and deployment:
   ;; - see https://github.com/slipset/deps-deploy
   ;;   - clj -X:deploy :artifact '"project.jar"'
@@ -15,6 +20,9 @@
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote}}
 
+  ;; polylith tool:
+  :poly {:replace-deps {polylith/clj-poly {:mvn/version "0.2.19"}}
+         :main-opts ["-m" "polylith.clj.core.poly-cli.core"]}
   ;; testing and debugging tools (this would normally be overridden
   ;; by a :test alias in the project deps.edn file -- but it's a
   ;; useful default):
@@ -116,12 +124,12 @@
   :1.10.0 {:override-deps {org.clojure/clojure {:mvn/version "1.10.0"}}}
   :1.10.1 {:override-deps {org.clojure/clojure {:mvn/version "1.10.1"}}}
   :1.10.2 {:override-deps {org.clojure/clojure {:mvn/version "1.10.2"}}}
-  ;; latest 1.11 is 1.11.1 but you can ask for earlier versions:
-  :1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
+  ;; latest 1.11 is 1.11.3 but you can ask for earlier versions:
+  :1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.3"}}}
   :1.11.0 {:override-deps {org.clojure/clojure {:mvn/version "1.11.0"}}}
-  ;; current 1.12 release is Alpha 4:
+  :1.11.1 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
+  :1.11.2 {:override-deps {org.clojure/clojure {:mvn/version "1.11.2"}}}
+  ;; current 1.12 release is Alpha 10:
   ;; - the functionality formerly requiring the :add-libs alias for the
   ;;   branch of tools.deps.alpha is now a part of clojure itself!
-  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-alpha4"}}}
-  ;; master is currently 1.12:
-  :master {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-master-SNAPSHOT"}}}}}
+  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0-alpha11"}}}}}
