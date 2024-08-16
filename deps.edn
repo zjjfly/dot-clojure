@@ -102,11 +102,15 @@
                  :sha "93a0c19b4526c1180959e940202928d35e5c3cef"}}}
   ;flow storm debugger
   :debug
-  {:classpath-overrides {org.clojure/clojure nil} ;; for disabling the official compiler
-   :extra-deps {com.github.flow-storm/clojure {:mvn/version "RELEASE"}
-                com.github.flow-storm/flow-storm-dbg {:mvn/version "RELEASE"}}
-   :jvm-opts ["-Dclojure.storm.instrumentEnable=true"
-              "-Dclojure.storm.instrumentOnlyPrefixes=user"]}
+  {:classpath-overrides {org.clojure/clojure nil}
+   :extra-deps {com.github.flow-storm/clojure {:mvn/version "1.12.0-alpha9_1"}
+                com.github.flow-storm/flow-storm-dbg {:mvn/version "3.13.1"}}
+   :jvm-opts ["-Dflowstorm.startRecording=false"
+              "-Dclojure.storm.instrumentEnable=true"
+              "-Dclojure.storm.instrumentAutoPrefixes=true"
+                       ;; with whatever editor you have
+              "-Dflowstorm.fileEditorCommand=idea --line <<LINE>> <<FILE>>"
+              "-Dflowstorm.fileEditorCommand=idea --line <<LINE>> <<FILE>>"]}
 
   ;; pull in specific versions of Clojure:
   :1.0 {:override-deps {org.clojure/clojure {:mvn/version "1.0.0"}}}
