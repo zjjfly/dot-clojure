@@ -5,6 +5,7 @@
 .lsp/.cache
 .nrepl-port
 .portal/vs-code.edn
+.rebel_readline_history
 clj.cp
 tools/tools.edn
 .idea
