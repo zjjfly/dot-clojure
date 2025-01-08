@@ -30,10 +30,13 @@
   ;; useful default):
   :test {:extra-paths ["src/test/clj" "test/clj"]
          :extra-deps {org.clojure/test.check {:mvn/version "RELEASE"}}}
-  ;; - see https://github.com/cognitect-labs/test-runner
+  ;; use this at the end of your aliases to cancel any main opts in earlier
+  ;; aliases, e.g., clojure -M:test:no-main to avoid running tests:
+  :no-main {:main-opts []}
+  ;; - see https://github.com/seancorfield/test-runner
   ;; - run your tests: clj -X:test:runner
-  :runner {:extra-deps {io.github.cognitect-labs/test-runner
-                        {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+  :runner {:extra-deps {io.github.seancorfield/test-runner
+                        {:git/tag "v0.6.0" :git/sha "d5f18c5"}}
            :exec-fn cognitect.test-runner.api/test
            :exec-args {:dirs ["src/test/clj" "test/clj"]
                        :patterns [".*$"]}}
@@ -60,9 +63,9 @@
   ;;   - clojure -M:fig:build:dev/repl
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :extra-deps {io.github.seancorfield/dot-clojure
-                          {:git/tag "v1.1.1"
-                           :git/sha "c967b4f"}}
-             :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
+                          {:git/tag "v1.2.0"
+                           :git/sha "3122256"}}
+             :main-opts ["-m" "org.corfield.dev.repl"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
   ;; - start a Socket REPL on port 50505 (not needed if you use the :dev/repl alias):
