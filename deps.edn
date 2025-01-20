@@ -28,7 +28,7 @@
   ;; testing and debugging tools (this would normally be overridden
   ;; by a :test alias in the project deps.edn file -- but it's a
   ;; useful default):
-  :test {:extra-paths ["src/test/clj" "test/clj"]
+  :test {:extra-paths ["src/test/clj" "test/clj" "src/test/clojure" "test/clojure"]
          :extra-deps {org.clojure/test.check {:mvn/version "RELEASE"}}}
   ;; use this at the end of your aliases to cancel any main opts in earlier
   ;; aliases, e.g., clojure -M:test:no-main to avoid running tests:
@@ -38,7 +38,7 @@
   :runner {:extra-deps {io.github.seancorfield/test-runner
                         {:git/tag "v0.6.0" :git/sha "d5f18c5"}}
            :exec-fn cognitect.test-runner.api/test
-           :exec-args {:dirs ["src/test/clj" "test/clj"]
+           :exec-args {:dirs ["src/test/clj" "test/clj" "src/test/clojure" "test/clojure"]
                        :patterns [".*$"]}}
   ;; - see https://github.com/jonase/eastwood#running-eastwood-in-a-repl
   :eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
