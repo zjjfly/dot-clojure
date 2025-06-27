@@ -1,4 +1,4 @@
-;; copyright (c) 2018-2024 sean corfield, all rights reserved
+;; copyright (c) 2018-2025 sean corfield, all rights reserved
 
 ;; see https://github.com/seancorfield/dot-clojure
 {:mvn/repos {"sonatype" {:url "https://oss.sonatype.org/content/repositories/snapshots/"}}
@@ -21,9 +21,13 @@
            :exec-args {:installer :remote}}
 
   ;; polylith tool:
-  :poly {:replace-deps {polylith/clj-poly {:mvn/version "0.2.21"}}
+  :poly {:replace-deps {polylith/clj-poly {:mvn/version "0.2.22"}}
          :main-opts ["-m" "polylith.clj.core.poly-cli.core"]}
-  :poly-next {:replace-deps {polylith/clj-poly {:mvn/version "0.3.21-SNAPSHOT"}}
+  :poly-next {:replace-deps {polylith/clj-poly #_{:mvn/version "0.3.21-SNAPSHOT"}
+                             ;; cljs-support branch (as of 6/23/25):
+                             {:git/url "https://github.com/polyfy/polylith"
+                              :git/sha "3878955bd3e9349249aa0b2d3a03027e9782afbf"
+                              :deps/root "projects/poly"}}
               :main-opts ["-m" "polylith.clj.core.poly-cli.core"]}
   ;; testing and debugging tools (this would normally be overridden
   ;; by a :test alias in the project deps.edn file -- but it's a
@@ -43,6 +47,9 @@
   ;; - see https://github.com/jonase/eastwood#running-eastwood-in-a-repl
   :eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
              :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
+  ;; - see https://github.com/NoahTheDuke/splint
+  :splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "RELEASE"}}
+           :main-opts ["-m" "noahtheduke.splint"]}
   ;; - see https://github.com/athos/clj-check
   :check {:extra-deps {io.github.athos/clj-check
                        {:git/tag "0.1.0" :git/sha "0ca84df"}}
@@ -60,11 +67,11 @@
   ;;   - clj -M:portal:dev/repl OR clojure -M:rebel:portal:dev/repl
   ;;   - clojure -M:rebel:dev/repl
   ;;   - clojure -M:nrepl:dev/repl
-  ;;   - clojure -M:fig:build:dev/repl
+  ;;   - there's no alias for adding figwheel, that's up to you
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :extra-deps {io.github.seancorfield/dot-clojure
-                          {:git/tag "v1.2.0"
-                           :git/sha "3122256"}}
+                          {:git/tag "v1.3.0"
+                           :git/sha "98631b1"}}
              :main-opts ["-m" "org.corfield.dev.repl"]}
   ;; - in case you need precompiled code on your classpath:
   :classes {:extra-paths ["classes"]}
@@ -73,6 +80,8 @@
   ;; - see https://github.com/bhauman/rebel-readline
   ;; - start a Rebel Readline REPL:
   :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "RELEASE"}}
+          ;; see https://github.com/fusesource/jansi/issues/301
+          :jvm-opts ["--enable-native-access=ALL-UNNAMED"]
           :main-opts ["-m" "rebel-readline.main"]}
   ;; - see https://nrepl.org/
   ;; - start a basic nREPL server on a random available port:
@@ -137,5 +146,6 @@
   :1.11.1 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
   :1.11.2 {:override-deps {org.clojure/clojure {:mvn/version "1.11.2"}}}
   :1.11.3 {:override-deps {org.clojure/clojure {:mvn/version "1.11.3"}}}
-  ;; latest 1.12 is 1.12.0:
-  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0"}}}}}
+  ;; latest 1.12 is 1.12.1 but you can ask for earlier versions:
+  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.1"}}}
+  :1.12.0 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0"}}}}}

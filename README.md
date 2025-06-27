@@ -4,11 +4,11 @@ This is my personal `.config/clojure/deps.edn` (or `.clojure/deps.edn`) file pro
 
 **Several git dependencies here assume you have at least Clojure CLI 1.11.1.1273!**
 
-In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the latest Clojure CLI (was 1.11.3.1463 when I last updated this) -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
+In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the latest Clojure CLI (was 1.12.1.1538 when I last updated this) -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
 
 The main alias I use here is `:dev/repl` which starts various combinations of REPL tooling. See [**The `:dev/repl` Alias**](#the-devrepl-alias) below for more details.
 
-_Since it is my personal file, it may make assumptions about my own environment. For example, it uses `"RELEASE"` for several tools -- and for Clojure itself, currently 1.12.0 -- so I can always get the latest stable version of any dev/test tool I use. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
+_Since it is my personal file, it may make assumptions about my own environment. For example, it uses `"RELEASE"` for several tools -- and for Clojure itself, currently 1.12.1 -- so I can always get the latest stable version of any dev/test tool I use. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
 
 **If you want a really well-documented, well-maintained alternative that actually tracks versions of tools, I would recommend you use the [Practicalli Clojure `deps.edn`](https://github.com/practicalli/clojure-deps-edn) project instead!**
 
@@ -21,14 +21,17 @@ TL;DR: add the following dependency and then start a REPL with `clj -M:dev/repl`
 {:dev/repl
  {:extra-deps
   {io.github.seancorfield/dot-clojure
-   {:git/tag "v1.2.0"
-    :git/sha "3122256"}}
+   {:git/tag "v1.3.0"
+    :git/sha "98631b1"}}
   :main-opts ["-m" "org.corfield.dev.repl"]}}
 ```
 There is also a `bin/repl` bash script that runs `clojure -M:1.12:portal:test:cider-nrepl:rebel:dev/repl`
 to start an nREPL server with CIDER middleware, and then a Rebel Readline
 interactive REPL, with Portal available (and `clojure.tools.logging`, if
 present, patched to `tap>` all log messages for Portal).
+
+I recently added `-J-Djdk.attach.allowAttachSelf` which assumes JDK 21+ so that
+nREPL can stop evaluation threads.
 
 ## Basic Tools
 
@@ -65,7 +68,8 @@ Deploy jar files (if you don't have a `build.clj` file):
 There are aliases to pull in various useful testing and debugging tools:
 * `:test` -- adds both `test` and `src/test/clojure` to your classpath and pulls in the latest stable version of `test.check`
 * `:runner` -- pulls in [Cognitect Labs' `test-runner`](https://github.com/cognitect-labs/test-runner) project and runs any tests it can find
-* `:eastwood` -- pulls in the latest stable release of [Eastwood](https://github.com/jonase/eastwood) on your `src` and `test` folders; use with `:test` above
+* `:eastwood` -- pulls and runs in the latest stable release of [Eastwood](https://github.com/jonase/eastwood) on your `src` and `test` folders; use with `:test` above
+* `:splint` -- pulls in and runs the latest stable release of [Splint](https://github.com/NoahTheDuke/splint) on your project or specific files
 * `:check` -- pulls in [Athos' Check](https://github.com/athos/clj-check) project to compile all your namespaces to check for syntax errors and reflection warnings like `lein check`
 * `:expect` -- pulls in the latest stable release of [expectations/clojure-test](https://github.com/clojure-expectations/clojure-test) -- the `clojure.test`-compatible version of Expectations
 * `:bench` -- pulls in the latest stable release of [Criterium](https://github.com/hugoduncan/criterium/) for benchmarking your code
@@ -102,7 +106,8 @@ There are aliases to pull in and start various REPL-related tools:
 * `:reflect` -- adds Stuart Halloway's reflector utility (best used with Portal)
 
 There are aliases to pull in specific versions of Clojure:
-* `:1.12` -- Clojure 1.12.0 -- see [changes to Clojure in version 1.12.0](https://github.com/clojure/clojure/blob/master/changes.md)
+* `:1.12` -- Clojure 1.12.1 -- see [changes to Clojure in version 1.12.1](https://github.com/clojure/clojure/blob/master/changes.md)
+  * `:1.12.0` -- Clojure 1.12.0
 * `:1.11` -- Clojure 1.11.4
   * `:1.11.3` -- Clojure 1.11.3
   * `:1.11.2` -- Clojure 1.11.2
@@ -119,12 +124,12 @@ There are aliases to pull in specific versions of Clojure:
 > Note: the `:master` alias has been removed since it is rarely different from the most recent (alpha) release of Clojure.
 
 To work with the Polylith command-line tool:
-* `:poly` -- the latest (stable) release of [Polylith's `poly` tool](https://github.com/polyfy/polylith), as a library from Clojars (previously, this was a git dependency) -- example usage:
+* `:poly` -- the latest (stable) release of [Polylith's `poly` tool](https://github.com/polyfy/polylith), as a library from Clojars -- example usage:
   * `clojure -M:poly shell` -- start an interactive Polylith shell,
   * `clojure -M:poly info :loc` -- display information about a Polylith workspace, including lines of code,
   * `clojure -M:poly create component name:user` -- create a `user` component in a Polylith workspace,
   * `clojure -M:poly test :dev` -- run tests in the `dev` project context, in a Polylith workspace.
-* `:poly-next` -- the latest SNAPSHOT release of the `poly` tool (currently 0.3.21-SNAPSHOT).
+* `:poly-next` -- the latest cljs-support branch of the `poly` tool.
 
 > Note: the _EXPERIMENTAL_ `:add-libs` alias has been removed -- use the [`clojure.repl.deps`](https://clojure.github.io/clojure/branch-master/clojure.repl-api.html#clojure.repl.deps) in Clojure 1.12.0 or later instead!
 
@@ -133,7 +138,8 @@ To work with the Polylith command-line tool:
 The `:dev/repl` alias calls `org.corfield.dev.repl/-main` in the [`repl.clj` file](https://github.com/seancorfield/dot-clojure/blob/develop/src/org/corfield/dev/repl.clj) from this repo. That does a number of things (see the `-main` docstring for more details):
 
 * Optionally, starts a Socket REPL server (with the port selected via an environment variable, a JVM property, or a dot-file created on a previous run).
-* If both Portal and `org.clojure/tools.logging` are on the classpath, it patch `tools.logging` to also `tap>` every log message in a format that Portal understands and can display (usually with the ability to go to the file/line listed in the log entry); call `(dev/toggle-logging!)` to turn this `tap>`'ing on and off.
+* If both Portal and `org.clojure/tools.logging` are on the classpath, it patches `tools.logging` to also `tap>` every log message in a format that Portal understands and can display (usually with the ability to go to the file/line listed in the log entry).
+* If both Portal and `com.github.seancorfield/logging4j2` are on the classpath, it patches `logging4j2` to also `tap>` every log message in a format that Portal understands and can display (usually with the ability to go to the file/line listed in the log entry).
 * If Portal 0.33.0 or later is on the classpath, use the Portal middleware with nREPL (if CIDER or nREPL are on the classpath). If using Portal 0.40.0 or later, this also adds the [Portal Notebook middleware](https://cljdoc.org/d/djblue/portal/0.40.0/doc/editors/vs-code/clojure-notebooks#portalnreplwrap-notebook).
 * Starts [Figwheel Main](https://github.com/bhauman/figwheel-main), if present on the classpath, else
 * Starts [Rebel Readline](https://github.com/bhauman/rebel-readline), if present on the classpath, else
@@ -162,6 +168,6 @@ Connect to the Socket REPL, write your code as `.cljc` files, and you'll have th
 
 # License
 
-Copyright © 2018-2024 Sean Corfield
+Copyright © 2018-2025 Sean Corfield
 
 Distributed under the Apache Software License version 2.0.
