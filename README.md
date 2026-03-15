@@ -2,13 +2,15 @@
 
 This is my personal `.config/clojure/deps.edn` (or `.clojure/deps.edn`) file providing useful `clj` aliases drawn from a variety of projects. It is published to GitHub so I can keep all my computers sync'd up -- and to provide a range of examples that folks new to the Clojure CLI might find helpful.
 
-**Several git dependencies here assume you have at least Clojure CLI 1.11.1.1273!**
+**I highly recommend ensuring you have [the latest Clojure CLI](https://clojure.org/releases/tools) installed!**
 
-In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the latest Clojure CLI (was 1.12.1.1538 when I last updated this) -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
+> The latest Clojure CLI was 1.12.4.1582 (Dec 10, 2025) when I last updated this file.
+
+In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the Clojure CLI -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
 
 The main alias I use here is `:dev/repl` which starts various combinations of REPL tooling. See [**The `:dev/repl` Alias**](#the-devrepl-alias) below for more details.
 
-_Since it is my personal file, it may make assumptions about my own environment. For example, it uses `"RELEASE"` for several tools -- and for Clojure itself, currently 1.12.1 -- so I can always get the latest stable version of any dev/test tool I use. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
+_Since it is my personal file, it may make assumptions about my own environment. I make no effort at backward-compatibility and may add, delete, or change aliases as they benefit me personally. Caveat Programmer!_
 
 **If you want a really well-documented, well-maintained alternative that actually tracks versions of tools, I would recommend you use the [Practicalli Clojure `deps.edn`](https://github.com/practicalli/clojure-deps-edn) project instead!**
 
@@ -21,16 +23,18 @@ TL;DR: add the following dependency and then start a REPL with `clj -M:dev/repl`
 {:dev/repl
  {:extra-deps
   {io.github.seancorfield/dot-clojure
-   {:git/tag "v1.3.0"
-    :git/sha "98631b1"}}
+   {:git/tag "v1.4.1"
+    :git/sha "b5f7199"}}
   :main-opts ["-m" "org.corfield.dev.repl"]}}
 ```
-There is also a `bin/repl` bash script that runs `clojure -M:1.12:portal:test:cider-nrepl:rebel:dev/repl`
+There is also a `bin/repl` bash script that runs
+`clojure "$@" -M:1.12:allow-attach-self:portal:test:cider-nrepl:rebel:dev/repl`
 to start an nREPL server with CIDER middleware, and then a Rebel Readline
-interactive REPL, with Portal available (and `clojure.tools.logging`, if
-present, patched to `tap>` all log messages for Portal).
+interactive REPL, as a client to that nREPL server, with Portal available (and `clojure.tools.logging`, if
+present, patched to `tap>` all log messages for Portal, also `logging4j2` -- my log4j2 wrapper).
 
-I recently added `-J-Djdk.attach.allowAttachSelf` which assumes JDK 21+ so that
+The `:allow-attach-self` alias is a recent addition, which sets the JVM property
+`-Djdk.attach.allowAttachSelf` for JDK 21+ so that
 nREPL can stop evaluation threads.
 
 ## Basic Tools
@@ -51,7 +55,7 @@ These are installed via `clojure -Ttools install ...` and usable via `clojure -T
 
 And the older `clj-new` tool:
 
-* `clj-new` -- the latest stable release of [clj-new](https://github.com/seancorfield/clj-new) to create new projects from (Leiningen and other) templates:
+* `clj-new` -- a recent stable release of [clj-new](https://github.com/seancorfield/clj-new) to create new projects from (Leiningen and other) templates:
   * `clojure -Tclj-new app :name myname/myapp` -- creates a new `deps.edn`-based application project (using `tools.build` for the uberjar),
   * `clojure -Tclj-new lib :name myname/mylib` -- creates a new `deps.edn`-based library project (using `tools.build` for the jar),
   * `clojure -Tclj-new template :name myname/mytemplate` -- creates a new `deps.edn`-based template project (using `tools.build` for the jar),
@@ -63,18 +67,19 @@ More tools will be added to this section over time (as more tools add `:tools/us
 ## Basic Aliases
 
 Deploy jar files (if you don't have a `build.clj` file):
-* `:deploy` -- pulls in and runs the latest stable release of Erik Assum's [deps-deploy](https://github.com/slipset/deps-deploy) and deploys the specified JAR file to Clojars, based on your `pom.xml` and the `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` environment variables; `clojure -X:deploy :artifact '"MyProject.jar"'`
+* `:deploy` -- pulls in and runs a recent stable release of Erik Assum's [deps-deploy](https://github.com/slipset/deps-deploy) and deploys the specified JAR file to Clojars, based on your `pom.xml` and the `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` environment variables; `clojure -X:deploy :artifact '"MyProject.jar"'`
 
 There are aliases to pull in various useful testing and debugging tools:
 * `:test` -- adds both `test` and `src/test/clojure` to your classpath and pulls in the latest stable version of `test.check`
-* `:runner` -- pulls in [Cognitect Labs' `test-runner`](https://github.com/cognitect-labs/test-runner) project and runs any tests it can find
-* `:eastwood` -- pulls and runs in the latest stable release of [Eastwood](https://github.com/jonase/eastwood) on your `src` and `test` folders; use with `:test` above
-* `:splint` -- pulls in and runs the latest stable release of [Splint](https://github.com/NoahTheDuke/splint) on your project or specific files
+* `:lazy` -- adds a recent stable release of [NoahTheDuke's Lazytest](https://github.com/NoahTheDuke/lazytest) for more expressive and powerful testing; can be used as `clojure -M:test:lazy` to run just Lazytest tests, or `clojure -X:test:lazy:runner` to run both Lazytest and `clojure.test` tests (via my fork of Cognitect's `test-runner` project)
+* `:runner` -- pulls in my fork of [Cognitect Labs' `test-runner`](https://github.com/cognitect-labs/test-runner) project and runs any tests it can find
+* `:eastwood` -- pulls and runs in a recent stable release of [Eastwood](https://github.com/jonase/eastwood) on your `src` and `test` folders; use with `:test` above
+* `:splint` -- pulls in and runs a recent stable release of [Splint](https://github.com/NoahTheDuke/splint) on your project or specific files
 * `:check` -- pulls in [Athos' Check](https://github.com/athos/clj-check) project to compile all your namespaces to check for syntax errors and reflection warnings like `lein check`
-* `:expect` -- pulls in the latest stable release of [expectations/clojure-test](https://github.com/clojure-expectations/clojure-test) -- the `clojure.test`-compatible version of Expectations
-* `:bench` -- pulls in the latest stable release of [Criterium](https://github.com/hugoduncan/criterium/) for benchmarking your code
+* `:bench` -- pulls in a recent stable release of [Criterium](https://github.com/hugoduncan/criterium/) for benchmarking your code
 
-* `:deps+` -- **adds** `tools.deps` to your classpath (the default `:deps` alias **replaces** the default classpath) so you can use `help/doc` on namespaces within your project, e.g., `clojure -X:deps+ help/doc :ns my.app.core`
+* `:this` -- adds the current directory as a `:local/root` dependency so that you can use `help/doc` on namespaces within your project, e.g., `clojure -X:deps:this help/doc :ns my.app.core`
+* `:no-main` -- adds an empty `:main-opts` so that you can run `clojure -M:test:no-main ...` in projects that combine the test deps with the test runner (instead of having them separate as this `deps.edn` has them). Because `:main-opts` is "last one wins", this allows you to essentially override (or remove) any `:main-opts` from aliases, so you can manually specify your own main options on the command-line.
 
 There are aliases to pull in and start various REPL-related tools:
 * `:dev/repl` -- depending on what is on your classpath, start Rebel Readline, with a Socket REPL (if requested -- note that "port 0" will dynamically select an available port and print it out), but `SOCKET_REPL_PORT` env var and `socket-repl-port` property override, saves port to `.socket-repl-port` file for next time;
@@ -87,27 +92,30 @@ There are aliases to pull in and start various REPL-related tools:
     * `clojure -M:nrepl:portal:dev/repl` -- ...with Portal (& middleware) or
     * `clojure -M:cider-nrepl:dev/repl` -- CIDER nREPL server or
     * `clojure -M:cider-nrepl:portal:dev/repl` -- ...with Portal (& middleware) or
-    * `clojure -M:rebel:nrepl:dev/repl` -- Rebel Readline REPL + basic nREPL server or
+    * `clojure -M:rebel:nrepl:dev/repl` -- Rebel Readline nREPL client + basic nREPL server or
     * `clojure -M:rebel:nrepl:portal:dev/repl` -- ...with Portal (& middleware) or
-    * `clojure -M:rebel:cider-nrepl:dev/repl` -- Rebel Readline REPL + CIDER nREPL server or
+    * `clojure -M:rebel:cider-nrepl:dev/repl` -- Rebel Readline nREPL client + CIDER nREPL server or
     * `clojure -M:rebel:cider-nrepl:portal:dev/repl` -- ...with Portal (& middleware) or
   * Also works with Figwheel Main (now that I've started doing ClojureScript!):
     * `clojure -M:portal:fig:build:dev/repl` or
 * `:classes` -- adds the `classes` folder to your classpath to pick up compiled code (e.g., see https://clojure.org/guides/dev_startup_time)
 * `:socket` -- starts a Socket REPL on port 50505; can be combined with other aliases since this is just a JVM option
-* `:rebel` -- starts a [Rebel Readline](https://github.com/bhauman/rebel-readline) REPL
+* `:rebel` -- starts a [Rebel Readline](https://github.com/bhauman/rebel-readline) REPL; note that this also loads the Rebel Readline nREPL client library
 * `:nrepl` -- starts a (headless) [nREPL server](https://nrepl.org/) on a random available port; `clojure -M:nrepl`
 * `:cider-nrepl` -- starts a (headless) CIDER-enhanced [nREPL server](https://nrepl.org/) on a random available port; `clojure -M:cider-nrepl`
 
 * `:datomic/dev.datafy` -- adds `datafy`/`nav` support for Datomic objects via [datomic/dev.datafy](https://github.com/Datomic/dev.datafy)
 * `:dbxray` -- adds [donut-party/dbxray](https://github.com/donut-party/dbxray) to help visualize your database structure
 * `:jedi-time` -- adds `datafy`/`nav` support for Java Time objects via [jedi-time](https://github.com/jimpil/jedi-time)
-* `:portal` -- pulls in the latest stable release of the [Portal](https://github.com/djblue/portal) data visualization tool -- see the Portal web site for usage options
+* `:portal` -- pulls in a recent stable release of the [Portal](https://github.com/djblue/portal) data visualization tool -- see the Portal web site for usage options
 * `:reflect` -- adds Stuart Halloway's reflector utility (best used with Portal)
 
 There are aliases to pull in specific versions of Clojure:
-* `:1.12` -- Clojure 1.12.1 -- see [changes to Clojure in version 1.12.1](https://github.com/clojure/clojure/blob/master/changes.md)
+* `:1.12` -- Clojure 1.12.4 -- see [changes to Clojure in version 1.12.4](https://github.com/clojure/clojure/blob/master/changes.md)
   * `:1.12.0` -- Clojure 1.12.0
+  * `:1.12.1` -- Clojure 1.12.1
+  * `:1.12.2` -- Clojure 1.12.2
+  * `:1.12.3` -- Clojure 1.12.3
 * `:1.11` -- Clojure 1.11.4
   * `:1.11.3` -- Clojure 1.11.3
   * `:1.11.2` -- Clojure 1.11.2
@@ -129,7 +137,7 @@ To work with the Polylith command-line tool:
   * `clojure -M:poly info :loc` -- display information about a Polylith workspace, including lines of code,
   * `clojure -M:poly create component name:user` -- create a `user` component in a Polylith workspace,
   * `clojure -M:poly test :dev` -- run tests in the `dev` project context, in a Polylith workspace.
-* `:poly-next` -- the latest cljs-support branch of the `poly` tool.
+* `:poly-next` -- the latest snapshot of the `poly` tool.
 
 > Note: the _EXPERIMENTAL_ `:add-libs` alias has been removed -- use the [`clojure.repl.deps`](https://clojure.github.io/clojure/branch-master/clojure.repl-api.html#clojure.repl.deps) in Clojure 1.12.0 or later instead!
 

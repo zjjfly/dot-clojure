@@ -1,77 +1,86 @@
 ;; copyright (c) 2018-2025 sean corfield, all rights reserved
 
- (ns org.corfield.dev.repl
-   "Invoke org.corfield.dev.repl/-main to start a REPL based on
+(ns org.corfield.dev.repl
+  "Invoke org.corfield.dev.repl/-main to start a REPL based on
   what tooling you have available on your classpath."
-   (:require [clojure.repl :refer [demunge]]
-             [clojure.string :as str]))
+  (:require [clojure.repl :refer [demunge]]
+            [clojure.string :as str]))
 
- (when-not (resolve 'requiring-resolve)
-   (throw (ex-info ":dev/repl and repl.clj require at least Clojure 1.10"
-                   *clojure-version*)))
+(when-not (resolve 'requiring-resolve)
+  (throw (ex-info ":dev/repl and repl.clj require at least Clojure 1.10"
+                  *clojure-version*)))
 
- (defn- socket-repl-port
-   "Return truthy if it looks like a Socket REPL Server is wanted,
+(defn- socket-repl-port
+  "Return truthy if it looks like a Socket REPL Server is wanted,
   else return nil. The truthy value is the port number to use.
 
   Checks the following for port numbers:
   * SOCKET_REPL_PORT env var - a value of none suppresses it
   * socket-repl-port property - a value of none suppresses it
   * .socket-repl-port file - assumed to contain a port number"
-   []
-   (let [s-port (or (System/getenv "SOCKET_REPL_PORT")
-                    (System/getProperty "socket-repl-port")
-                    (try (slurp ".socket-repl-port") (catch Throwable _)))]
-     (when-not (= "none" s-port)
-       (try
-         (Long/parseLong s-port)
-         (catch Throwable _)))))
+  []
+  (let [s-port (or (System/getenv "SOCKET_REPL_PORT")
+                   (System/getProperty "socket-repl-port")
+                   (try (slurp ".socket-repl-port") (catch Throwable _)))]
+    (when-not (= "none" s-port)
+      (try
+        (Long/parseLong s-port)
+        (catch Throwable _)))))
 
- (defn- tap>log [frame level throwable message]
-   (let [class-name (symbol (demunge (.getClassName frame)))]
+(defn- tap>log [^StackTraceElement frame level throwable message]
+  (let [class-name (symbol (demunge (.getClassName frame)))]
     ;; only called for enabled log levels:
-     (tap>
-      (with-meta
-        {:form     '()
-         :level    level
-         :result   (or throwable message)
-         :ns       (symbol (or (namespace class-name)
+    (tap>
+     (with-meta
+       {:form     '()
+        :level    level
+        :result   (or throwable message)
+        :ns       (symbol (or (namespace class-name)
                                                                         ;; fully-qualified classname - strip class:
-                               (str/replace (name class-name) #"\.[^\.]*$" "")))
-         :file     (.getFileName frame)
-         :line     (.getLineNumber frame)
-         :column   0
-         :time     (java.util.Date.)
-         :runtime  :clj}
-        {:dev.repl/logging true}))))
+                              (str/replace (name class-name) #"\.[^\.]*$" "")))
+        :file     (.getFileName frame)
+        :line     (.getLineNumber frame)
+        :column   0
+        :time     (java.util.Date.)
+        :runtime  :clj}
+       {:dev.repl/logging true}))))
 
- (defn- ctl-log*adapter [log-star]
-   (let [log*-fn (deref log-star)]
-     (fn [logger level throwable message]
-       (try
-         (let [^StackTraceElement frame (nth (.getStackTrace (Throwable. "")) 2)]
-           (tap>log frame level throwable message))
-         (catch Throwable _))
-       (log*-fn logger level throwable message))))
+(defn- ctl-log*adapter [log-star]
+  (let [log*-fn (deref log-star)]
+    (fn [logger level throwable message]
+      (try
+        (let [frame (nth (.getStackTrace (Throwable. "")) 2)]
+          (tap>log frame level throwable message))
+        (catch Throwable _))
+      (log*-fn logger level throwable message))))
 
- (defn- logging4j2*adapter [log-star]
-   (let [log*-fn (deref log-star)]
-     (fn [logger level & more]
-       (let [[throwable message-parts]
+(defn- logging4j2*adapter [log-star]
+  (let [log*-fn (deref log-star)]
+    (fn [logger level & more]
+      (let [[throwable message-parts]
             ;; drop marker if present; find throwable and everything else:
-             (cond (instance? Throwable (first more))
-                   [(first more) (rest more)]
-                   (instance? Throwable (second more))
-                   [(second more) (rest (rest more))]
-                   :else
-                   [nil more])
-             message (str/join " " message-parts)]
-         (try
-           (let [^StackTraceElement frame (nth (.getStackTrace (Throwable. "")) 3)]
-             (tap>log frame (-> level str str/lower-case keyword)
-                      throwable message))
-           (catch Throwable _))
-         (apply log*-fn logger level more)))))
+            (cond (instance? Throwable (first more))
+                  [(first more) (rest more)]
+                  (instance? Throwable (second more))
+                  [(second more) (rest (rest more))]
+                  :else
+                  [nil more])
+            message (str/join " " message-parts)]
+        (try
+          (let [frame (nth (.getStackTrace (Throwable. "")) 3)]
+            (tap>log frame (-> level str str/lower-case keyword)
+                     throwable message))
+          (catch Throwable _))
+        (apply log*-fn logger level more)))))
+
+#_{:clj-kondo/ignore [:unused-private-var]}
+(defn- connect-to-nrepl
+  "Credit to https://github.com/alexander-yakushev for this approach."
+  [_host port _config]
+  (let [start-repl (resolve 'rebel-readline.nrepl.main/start-repl)]
+    (println "Connecting Rebel Readline to nREPL server on port"
+             (str port "..."))
+    (start-repl {:port port})))
 
 (defn -main
   "If Jedi Time is on the classpath, require it (so that Java Time
@@ -92,7 +101,7 @@
   * if Figwheel Main is on the classpath then start that, else
   * if Rebel Readline is on the classpath then start that, else
   * start a plain ol' Clojure REPL."
-  [& args]
+  [& _]
   ;; jedi-time?
   (try
     (require 'jedi-time.core)
@@ -114,7 +123,7 @@
           ((requiring-resolve 'clojure.core.server/start-server)
            {:port s-port :name server-name
             :accept 'clojure.core.server/repl})
-          (let [s-port' (.getLocalPort
+          (let [s-port' (.getLocalPort ^java.net.ServerSocket
                          (get-in @(requiring-resolve 'clojure.core.server/servers)
                                  [server-name :socket]))]
             (println "Selected port" s-port' "for the Socket REPL...")
@@ -167,11 +176,16 @@
                 ["Figwheel Main" #(figgy "-b" "dev" "-r")])
               (catch Throwable _))
             (try ; Rebel Readline?
-              (let [rebel-main (requiring-resolve 'rebel-readline.main/-main)]
+              (let [rebel-main (requiring-resolve 'rebel-readline.main/-main)
+                    rebel-nrepl (try (require 'rebel-readline.nrepl.main)
+                                     true
+                                     (catch Throwable _))]
                 (try
                   (require 'nrepl.cmdline)
                   ;; both Rebel Readline and nREPL are on the classpath!
-                  [(str "Rebel Readline + nREPL Server"
+                  [(str "Rebel Readline "
+                        (when rebel-nrepl "Client ")
+                        "+ nREPL Server"
                         (when (seq middleware)
                           (str " with " (str/join ", " (map first middleware)))))
                    (fn []
@@ -181,7 +195,9 @@
                             "-m" "nrepl.cmdline"
                             (into (or mw-args [])
                                   ["--interactive"
-                                   "-f" "rebel-readline.main/-main"])))]
+                                   "-f" (if rebel-nrepl
+                                          "org.corfield.dev.repl/connect-to-nrepl"
+                                          "rebel-readline.main/-main")])))]
                   (catch Throwable _
                     ;; only Rebel Readline is on the classpath:
                     ["Rebel Readline" rebel-main])))
@@ -192,7 +208,7 @@
                       (str " with " (str/join ", " (map first middleware)))))
                (let [nrepl (requiring-resolve 'nrepl.cmdline/-main)]
                  (fn []
-                   (apply nrepl mw-args)))]
+                   (apply nrepl (conj mw-args "--interactive"))))]
               (catch Throwable _))
             ;; fallback to plain REPL:
             ["clojure.main" (resolve 'clojure.main/main)])]
@@ -202,11 +218,15 @@
     (System/exit 0)))
 
 (in-ns 'user)
-(defn uptime []
+(require 'clojure.string) ; to satisfy clj-kondo :)
+#_{:clj-kondo/ignore [:unused-private-var]}
+(defn- uptime []
   (-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
       (.getUptime)
       (java.time.Duration/ofMillis)
-      (as-> t (map #(% t) [#(.toHours %) #(.toMinutesPart %) #(.toSecondsPart %)])
+      (as-> t (map #(% t) [#(.toHours       ^java.time.Duration %)
+                           #(.toMinutesPart ^java.time.Duration %)
+                           #(.toSecondsPart ^java.time.Duration %)])
         (let [[h & ms] t]
           (map vector
                (into ((juxt #(long (/ % 24)) #(mod % 24)) h) ms)
