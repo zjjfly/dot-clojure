@@ -2,9 +2,11 @@
 
 This is my personal `.config/clojure/deps.edn` (or `.clojure/deps.edn`) file providing useful `clj` aliases drawn from a variety of projects. It is published to GitHub so I can keep all my computers sync'd up -- and to provide a range of examples that folks new to the Clojure CLI might find helpful.
 
+**The default Clojure version in use here is 1.13.0-alpha6!**
+
 **I highly recommend ensuring you have [the latest Clojure CLI](https://clojure.org/releases/tools) installed!**
 
-> The latest Clojure CLI was 1.12.4.1582 (Dec 10, 2025) when I last updated this file.
+> The latest Clojure CLI was 1.12.5.1638 (May 12, 2026) when I last updated this file.
 
 In addition, my `.config/clojure/tools/` (`.clojure/tools/`) folder is also here, containing the tools that I've installed globally, via the Clojure CLI -- see [Tool installation and invocation](https://clojure.org/reference/clojure_cli#tool_install) in the Clojure CLI Reference. As I add global tools, I am removing them as aliases.
 
@@ -23,12 +25,12 @@ TL;DR: add the following dependency and then start a REPL with `clj -M:dev/repl`
 {:dev/repl
  {:extra-deps
   {io.github.seancorfield/dot-clojure
-   {:git/tag "v1.4.1"
-    :git/sha "b5f7199"}}
+   {:git/tag "v1.4.2"
+    :git/sha "2ac85f5"}}
   :main-opts ["-m" "org.corfield.dev.repl"]}}
 ```
 There is also a `bin/repl` bash script that runs
-`clojure "$@" -M:1.12:allow-attach-self:portal:test:cider-nrepl:rebel:dev/repl`
+`clojure "$@" -M:1.13:allow-attach-self:portal:test:cider-nrepl:rebel:dev/repl`
 to start an nREPL server with CIDER middleware, and then a Rebel Readline
 interactive REPL, as a client to that nREPL server, with Portal available (and `clojure.tools.logging`, if
 present, patched to `tap>` all log messages for Portal, also `logging4j2` -- my log4j2 wrapper).
@@ -109,13 +111,16 @@ There are aliases to pull in and start various REPL-related tools:
 * `:jedi-time` -- adds `datafy`/`nav` support for Java Time objects via [jedi-time](https://github.com/jimpil/jedi-time)
 * `:portal` -- pulls in a recent stable release of the [Portal](https://github.com/djblue/portal) data visualization tool -- see the Portal web site for usage options
 * `:reflect` -- adds Stuart Halloway's reflector utility (best used with Portal)
+* `:rephrase` -- adds the latest stable release of [rephrase](https://github.com/seancorfield/rephrase), which provides nREPL middleware to rephrase error messages into more beginner-friendly versions. This is automatically added by the `:dev/repl` alias.
 
 There are aliases to pull in specific versions of Clojure:
-* `:1.12` -- Clojure 1.12.4 -- see [changes to Clojure in version 1.12.4](https://github.com/clojure/clojure/blob/master/changes.md)
+* `:1.13` -- Clojure 1.13.0-alpha6 -- see [changes to Clojure in the 1.13 Alpha releases](https://clojure.org/releases/devchangelog#_release_1_13_x)
+* `:1.12` -- Clojure 1.12.5 -- see [changes to Clojure in version 1.12.5](https://github.com/clojure/clojure/blob/master/changes.md)
   * `:1.12.0` -- Clojure 1.12.0
   * `:1.12.1` -- Clojure 1.12.1
   * `:1.12.2` -- Clojure 1.12.2
   * `:1.12.3` -- Clojure 1.12.3
+  * `:1.12.4` -- Clojure 1.12.4
 * `:1.11` -- Clojure 1.11.4
   * `:1.11.3` -- Clojure 1.11.3
   * `:1.11.2` -- Clojure 1.11.2
@@ -156,6 +161,8 @@ The `:dev/repl` alias calls `org.corfield.dev.repl/-main` in the [`repl.clj` fil
 
 As of v1.1.0, can start a Rebel Readline REPL and an nREPL Server together.
 
+As of v1.4.2, includes the `rephrase` nREPL middleware to rephrase error messages into more beginner-friendly versions.
+
 _Note 1: since the `repl.clj` code uses `requiring-resolve`, it requires at least Clojure 1.10.0!_
 
 _Note 2: if the Portal middleware is added to nREPL/CIDER, all evaluated results will be `tap>`'d (if the Portal UI is open and listening); my [VS Code/Calva setup](https://github.com/seancorfield/vscode-calva-setup) has additional configuration for working with Portal when the middleware is enabled!_
@@ -176,6 +183,6 @@ Connect to the Socket REPL, write your code as `.cljc` files, and you'll have th
 
 # License
 
-Copyright © 2018-2025 Sean Corfield
+Copyright © 2018-2026 Sean Corfield
 
 Distributed under the Apache Software License version 2.0.

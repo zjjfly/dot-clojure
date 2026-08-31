@@ -1,8 +1,8 @@
-;; copyright (c) 2018-2025 sean corfield, all rights reserved
+;; copyright (c) 2018-2026 sean corfield, all rights reserved
 
 ;; see https://github.com/seancorfield/dot-clojure
 {:mvn/repos {"sonatype" {:url "https://oss.sonatype.org/content/repositories/snapshots/"}}
- :deps {org.clojure/clojure {:mvn/version "1.12.4"}}
+ :deps {org.clojure/clojure {:mvn/version "1.13.0-alpha6"}}
  :aliases
  {;; clojure -X:deps:this help/dir :ns my.project.core
   :this {:deps {this/project {:local/root "."}}}
@@ -12,7 +12,7 @@
   ;;   - clj -X:deploy :artifact '"project.jar"'
   ;; - this relies on having a pom.xml file and, for deployment, these two
   ;;   environment variables: CLOJARS_USERNAME, CLOJARS_PASSWORD
-  :deploy {:replace-deps {slipset/deps-deploy {:mvn/version "0.2.2"}}
+  :deploy {:replace-deps {slipset/deps-deploy {:mvn/version "0.2.5"}}
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote}}
 
@@ -22,6 +22,7 @@
   :poly-next
   {:replace-deps {polylith/clj-poly {:mvn/version "0.3.33-SNAPSHOT"}}
    :main-opts ["-m" "polylith.clj.core.poly-cli.core"]}
+
   ;; testing and debugging tools (this would normally be overridden
   ;; by a :test alias in the project deps.edn file -- but it's a
   ;; useful default):
@@ -33,10 +34,10 @@
   ;; - see https://github.com/noahtheduke/lazytest
   ;; - run just lazytest tests: clj -M:test:lazy
   ;; - run clojure.test and lazytest tests: clj -X:test:lazy:runner
-  :lazy {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "1.9.1"}}
+  :lazy {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "2.1.0"}}
          :main-opts ["-m" "lazytest.main"]}
   ;; - see https://github.com/seancorfield/test-runner
-  ;; - automatically runs lazytest tests if :lazy alias is present
+  ;; - automatically runs lazytest tests if :lazy alias is also used
   ;; - run your tests: clj -X:test:runner
   :runner {:extra-deps {io.github.seancorfield/test-runner
                         {:git/tag "v0.6.0" :git/sha "d5f18c5"}}
@@ -47,12 +48,14 @@
   :eastwood {:extra-deps {jonase/eastwood {:mvn/version "1.4.3"}}
              :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
   ;; - see https://github.com/NoahTheDuke/splint
-  :splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.23.1"}}
+  :splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.24.0"}}
            :main-opts ["-m" "noahtheduke.splint"]}
   ;; - see https://github.com/athos/clj-check
   :check {:extra-deps {io.github.athos/clj-check
                        {:git/tag "0.1.0" :git/sha "0ca84df"}}
           :main-opts ["-m" "clj-check.check"]}
+
+  ;; performance:
   ;; - see https://github.com/hugoduncan/criterium/
   ;; - (require '[criterium.core :refer [bench]])
   ;; - (bench (your-expression))
@@ -66,9 +69,11 @@
   ;;   - there's no alias for adding figwheel, that's up to you
   :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
              :extra-deps {io.github.seancorfield/dot-clojure
-                          {:git/tag "v1.4.1"
-                           :git/sha "b5f7199"}}
+                          {:git/tag "v1.4.2"
+                           :git/sha "2ac85f5"}
+                          org.corfield/rephrase {:mvn/version "1.0.4"}}
              :main-opts ["-m" "org.corfield.dev.repl"]}
+  :rephrase {:extra-deps {org.corfield/rephrase {:mvn/version "1.0.4"}}}
 
   ;; - for JDK 21+, so that nREPL can interrupt long-running evaluations:
   :allow-attach-self
@@ -80,23 +85,24 @@
   :socket {:jvm-opts ["-Dclojure.server.repl={:address,\"0.0.0.0\",:port,50505,:accept,clojure.core.server/repl}"]}
   ;; - see https://github.com/bhauman/rebel-readline
   ;; - start a Rebel Readline REPL:
-  :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.5"}
+  :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.11"}
                        ;; in case we want to use Rebel as an nREPL client:
-                       com.bhauman/rebel-readline-nrepl {:mvn/version "0.1.7"}}
+                       com.bhauman/rebel-readline-nrepl {:mvn/version "0.1.11"}}
           ;; see https://github.com/fusesource/jansi/issues/301
           :jvm-opts ["--enable-native-access=ALL-UNNAMED"]
           :main-opts ["-m" "rebel-readline.main"]}
   ;; - see https://nrepl.org/
   ;; - start a basic nREPL server on a random available port:
-  :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "1.6.0"}}
+  :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "1.7.0"}}
           :main-opts ["-m" "nrepl.cmdline"]}
   ;; - see https://nrepl.org/
   ;; - start a CIDER-enhanced nREPL server on a random available port:
-  :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.58.0"}
+  :cider-nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.62.2"}
                              ; until cider-nrepl is updated to this:
-                             nrepl/nrepl {:mvn/version "1.6.0"}}
+                             nrepl/nrepl {:mvn/version "1.7.0"}}
                 :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
+  ;; datafication tools:
   ;; - see https://github.com/Datomic/dev.datafy
   :datomic/dev.datafy
   {:extra-deps {com.datomic/dev.datafy {:git/sha "4a9dffb"
@@ -111,7 +117,7 @@
   {:extra-deps {jedi-time/jedi-time {:mvn/version "0.2.1"}}}
   ;; - see https://github.com/djblue/portal
   :portal
-  {:extra-deps {djblue/portal {:mvn/version "0.62.2"}}}
+  {:extra-deps {djblue/portal {:mvn/version "0.67.2"}}}
   ;; - see https://github.com/stuarthalloway/reflector
   :reflect
   {:extra-deps {io.github.stuarthalloway/reflector
@@ -149,9 +155,12 @@
   :1.11.1 {:override-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
   :1.11.2 {:override-deps {org.clojure/clojure {:mvn/version "1.11.2"}}}
   :1.11.3 {:override-deps {org.clojure/clojure {:mvn/version "1.11.3"}}}
-  ;; latest 1.12 is 1.12.4 but you can ask for earlier versions:
-  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.4"}}}
+  ;; latest 1.12 is 1.12.5 but you can ask for earlier versions:
+  :1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.5"}}}
   :1.12.0 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0"}}}
   :1.12.1 {:override-deps {org.clojure/clojure {:mvn/version "1.12.1"}}}
   :1.12.2 {:override-deps {org.clojure/clojure {:mvn/version "1.12.2"}}}
-  :1.12.3 {:override-deps {org.clojure/clojure {:mvn/version "1.12.3"}}}}}
+  :1.12.3 {:override-deps {org.clojure/clojure {:mvn/version "1.12.3"}}}
+  :1.12.4 {:override-deps {org.clojure/clojure {:mvn/version "1.12.4"}}}
+  ;; latest 1.13 is 1.13.0-alpha6:
+  :1.13 {:override-deps {org.clojure/clojure {:mvn/version "1.13.0-alpha6"}}}}}
