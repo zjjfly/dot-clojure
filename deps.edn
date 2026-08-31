@@ -126,10 +126,11 @@
   ;flow storm debugger
   :debug
   {:classpath-overrides {org.clojure/clojure nil}
-   :extra-deps {com.github.flow-storm/clojure {:mvn/version "1.12.4"}
-                com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.9"}}}
+   :extra-deps {com.github.flow-storm/clojure {:mvn/version "1.13.0-alpha6"}
+                com.github.flow-storm/flow-storm-dbg {:mvn/version "4.8.1"}}}
   ;; Optional plugins you find yourself using regularly
-  :fs-web-plugin {:extra-deps {com.github.flow-storm/flow-storm-web-plugin {:mvn/version "1.0.0-beta"}}
+  :fs-web-plugin 
+  {:extra-deps {com.github.flow-storm/flow-storm-web-plugin {:mvn/version "1.0.0-beta"}}
                   :jvm-opts ["-Dclojure.storm.instrumentOnlyPrefixes.webPlugin=org.httpkit.server,ring.adapter.jetty,next.jdbc.result-set"
                              "-Dflowstorm.plugins.namespaces.webPlugin=flow-storm.plugins.web.all"]}
 
